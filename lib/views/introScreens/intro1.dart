@@ -16,7 +16,7 @@ class IntroScreen1 extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           SvgPicture.asset(
-            'images/svgs/flex.svg',
+            'images/svgs/flexB.svg',
             width: 299,
           ),
           const SizedBox(

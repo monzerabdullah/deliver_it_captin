@@ -1,5 +1,6 @@
 import 'package:deliver_it_captin/constants.dart';
 import 'package:deliver_it_captin/views/login_view.dart';
+import 'package:deliver_it_captin/views/sign_continue_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 
@@ -148,7 +149,12 @@ class SignUpView extends StatelessWidget {
                     ),
                     const Spacer(),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const SignUpContinue()));
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kPrimary,
                         textStyle: const TextStyle(
@@ -163,7 +169,7 @@ class SignUpView extends StatelessWidget {
                         minimumSize: const Size.fromHeight(60),
                       ),
                       child: const Text(
-                        'أنشيء حسابك',
+                        'التالي',
                       ),
                     ),
                     const SizedBox(

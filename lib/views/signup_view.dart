@@ -1,6 +1,7 @@
 import 'package:deliver_it_captin/constants.dart';
 import 'package:deliver_it_captin/views/login_view.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 
 class SignUpView extends StatelessWidget {
   const SignUpView({super.key});
@@ -21,7 +22,7 @@ class SignUpView extends StatelessWidget {
             child: SingleChildScrollView(
               child: ConstrainedBox(
                 constraints: BoxConstraints(
-                  maxHeight: mqHeight - mqHeight * 0.15,
+                  maxHeight: mqHeight - mqHeight * 0.0002,
                 ),
                 child: Column(
                   children: [
@@ -57,7 +58,28 @@ class SignUpView extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(
-                      height: 64,
+                      height: 34,
+                    ),
+                    Stack(
+                      children: [
+                        SvgPicture.asset(
+                          'images/svgs/avatar.svg',
+                          width: 140,
+                        ),
+                        Positioned(
+                          bottom: 0,
+                          child: IconButton(
+                            onPressed: () {},
+                            icon: const Icon(
+                              Icons.add_a_photo,
+                              color: kPrimary,
+                            ),
+                          ),
+                        )
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 24,
                     ),
                     const TextField(
                       decoration: InputDecoration(
@@ -90,6 +112,34 @@ class SignUpView extends StatelessWidget {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'كلمة السر',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Cairo',
+                          color: kSecondaryText,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    const TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'رقم البطاقة الشخصية',
+                        labelStyle: TextStyle(
+                          fontFamily: 'Cairo',
+                          color: kSecondaryText,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 24,
+                    ),
+                    const TextField(
+                      obscureText: true,
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'رقم اللوحة',
                         labelStyle: TextStyle(
                           fontFamily: 'Cairo',
                           color: kSecondaryText,

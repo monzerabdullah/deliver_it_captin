@@ -62,21 +62,21 @@ class HomeView extends StatelessWidget {
                   )
                 ],
               ),
-              TextButton(
-                onPressed: () {},
-                child: const Text(
-                  '22 يونيو ، 2024 ',
-                  style: TextStyle(
-                    fontFamily: 'Cairo',
-                    fontSize: 22.0,
-                    color: kPrimaryText,
-                    fontWeight: FontWeight.bold,
-                  ),
+              const Text(
+                '22 يونيو ، 2024 ',
+                style: TextStyle(
+                  fontFamily: 'Cairo',
+                  fontSize: 22.0,
+                  color: kPrimaryText,
+                  fontWeight: FontWeight.bold,
                 ),
+              ),
+              const SizedBox(
+                height: 10,
               ),
               const DayData(),
               const SizedBox(
-                height: 20,
+                height: 40,
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

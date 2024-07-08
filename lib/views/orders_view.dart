@@ -17,24 +17,35 @@ class Orders extends StatelessWidget {
         ),
         title: const Text('سجل الرحلات'),
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SvgPicture.asset('images/svgs/history.svg'),
-            const SizedBox(
-              height: 45,
+      body: const OrdersList(),
+    );
+  }
+}
+
+class OrdersList extends StatelessWidget {
+  const OrdersList({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          SvgPicture.asset('images/svgs/history.svg'),
+          const SizedBox(
+            height: 45,
+          ),
+          const Text(
+            'لا توجد رحلات سابقة اليوم',
+            style: TextStyle(
+              fontFamily: 'Cairo',
+              color: kSecondaryText,
+              fontSize: 22.0,
             ),
-            const Text(
-              'لا توجد رحلات سابقة اليوم',
-              style: TextStyle(
-                fontFamily: 'Cairo',
-                color: kSecondaryText,
-                fontSize: 22.0,
-              ),
-            ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

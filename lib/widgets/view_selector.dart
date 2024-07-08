@@ -3,17 +3,19 @@ import 'package:flutter/material.dart';
 import 'package:deliver_it_captin/constants.dart';
 
 class ViewSelector extends StatelessWidget {
-  const ViewSelector({
+  ViewSelector({
     super.key,
     required this.label,
     required this.icon,
+    required this.onTap,
   });
   final IconData icon;
   final String label;
+  Function()? onTap;
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () {},
+      onTap: onTap,
       child: Card(
         elevation: 4.0,
         child: Column(

@@ -7,6 +7,15 @@ class MoreView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.menu),
+          onPressed: () {
+            Scaffold.of(context).openDrawer();
+          },
+        ),
+        title: const Text('المزيد'),
+      ),
       body: GridView.count(
         crossAxisCount: 2,
         mainAxisSpacing: 25.0,

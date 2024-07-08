@@ -28,9 +28,9 @@ class _MyAppState extends State<MyApp> {
       home: Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
-          appBar: AppBar(
-            title: const Text('الرئيسية'),
-          ),
+          // appBar: AppBar(
+          //   title: const Text('الرئيسية'),
+          // ),
           body: const [
             HomeView(),
             Orders(),

@@ -11,6 +11,7 @@ class MoreView extends StatelessWidget {
         crossAxisCount: 2,
         mainAxisSpacing: 25.0,
         crossAxisSpacing: 25.0,
+        childAspectRatio: 2 / 2.2,
         padding: const EdgeInsets.symmetric(
           vertical: 40,
           horizontal: 20,

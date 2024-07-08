@@ -1,5 +1,6 @@
 import 'package:deliver_it_captin/constants.dart';
 import 'package:deliver_it_captin/views/login_view.dart';
+import 'package:deliver_it_captin/views/otp_view.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 
@@ -113,7 +114,7 @@ class SignUpContinue extends StatelessWidget {
                         Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const SignUpContinue()));
+                                builder: (context) => const OtpConfirmation()));
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kPrimary,

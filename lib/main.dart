@@ -72,20 +72,28 @@ class _MyAppState extends State<MyApp> {
         appBarTheme: AppBarTheme(
           backgroundColor: Colors.grey[100],
           titleTextStyle: const TextStyle(
-            color: kPrimaryText,
+            color: kPrimary,
             fontFamily: 'Cairo',
             fontSize: 20.0,
           ),
           iconTheme: const IconThemeData(
-            color: kPrimaryText,
+            color: kPrimary,
           ),
         ),
         navigationBarTheme: NavigationBarThemeData(
-          indicatorColor: kPrimary.withOpacity(.3),
+          backgroundColor: kPrimary,
+          indicatorColor: kPrimaryText.withOpacity(.3),
+          iconTheme: const MaterialStatePropertyAll(
+            IconThemeData(
+              color: kWhite,
+            ),
+          ),
           labelTextStyle: const MaterialStatePropertyAll(
             TextStyle(
               fontFamily: 'Cairo',
-              color: kPrimaryText,
+              color: kWhite,
+              fontSize: 16.0,
+              fontWeight: FontWeight.w500,
             ),
           ),
         ),

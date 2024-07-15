@@ -14,6 +14,31 @@ class WorkTimer extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Column(
           children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                const Text(
+                  'الحالة',
+                  style: TextStyle(
+                    fontFamily: 'Cairo',
+                    fontSize: 18.0,
+                    color: kPrimaryText,
+                  ),
+                ),
+                TextButton(
+                  onPressed: () {},
+                  child: const Text(
+                    'في إنتظار الطلبيات',
+                    style: TextStyle(
+                      fontFamily: 'Cairo',
+                      fontSize: 16.0,
+                      color: Colors.amber,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                )
+              ],
+            ),
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
               decoration: BoxDecoration(
@@ -40,7 +65,7 @@ class WorkTimer extends StatelessWidget {
                           fontFamily: 'Cairo',
                           fontSize: 16.0,
                           color: kSecondaryText,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                         ),
                       )
                     ],
@@ -71,7 +96,7 @@ class WorkTimer extends StatelessWidget {
                           fontFamily: 'Cairo',
                           fontSize: 16.0,
                           color: kSecondaryText,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                         ),
                       )
                     ],
@@ -102,7 +127,7 @@ class WorkTimer extends StatelessWidget {
                           fontFamily: 'Cairo',
                           fontSize: 16.0,
                           color: kSecondaryText,
-                          fontWeight: FontWeight.bold,
+                          fontWeight: FontWeight.w500,
                         ),
                       )
                     ],
@@ -117,17 +142,17 @@ class WorkTimer extends StatelessWidget {
               onPressed: () {},
               style: ElevatedButton.styleFrom(
                 minimumSize: const Size.fromHeight(51),
-                backgroundColor: kRed,
+                backgroundColor: kPrimary,
               ),
               child: const Text(
-                'التوقف عن العمل',
+                'بدء العمل',
                 style: TextStyle(
                   fontFamily: 'Cairo',
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-            )
+            ),
           ],
         ),
       ),

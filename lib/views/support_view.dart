@@ -129,7 +129,7 @@ class _SupportViewState extends State<SupportView> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.all(10),
                     minimumSize: const Size.fromHeight(51),
-                    backgroundColor: kPrimaryText,
+                    backgroundColor: kPrimary,
                   ),
                   child: const Text(
                     'إرسال',
@@ -151,6 +151,7 @@ class _SupportViewState extends State<SupportView> {
                     Icon(
                       Icons.headset_mic_outlined,
                       size: 35,
+                      color: kPrimary,
                     ),
                     SizedBox(
                       width: 10,
@@ -161,6 +162,7 @@ class _SupportViewState extends State<SupportView> {
                         fontFamily: 'Cairo',
                         fontSize: 22.0,
                         fontWeight: FontWeight.w500,
+                        color: kPrimary,
                       ),
                     )
                   ],

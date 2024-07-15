@@ -21,7 +21,7 @@ class DayData extends StatelessWidget {
                   'المسافة',
                   style: TextStyle(
                     fontFamily: 'Cairo',
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     color: kSecondaryText,
                   ),
                 ),
@@ -42,7 +42,7 @@ class DayData extends StatelessWidget {
                   'الطلبات',
                   style: TextStyle(
                     fontFamily: 'Cairo',
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     color: kSecondaryText,
                   ),
                 ),
@@ -63,7 +63,7 @@ class DayData extends StatelessWidget {
                   'الدخل',
                   style: TextStyle(
                     fontFamily: 'Cairo',
-                    fontSize: 18.0,
+                    fontSize: 16.0,
                     color: kSecondaryText,
                   ),
                 ),

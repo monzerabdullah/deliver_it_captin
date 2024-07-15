@@ -36,7 +36,7 @@ class HomeView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const SizedBox(
-                  height: 10,
+                  height: 15,
                 ),
                 Stack(
                   clipBehavior: Clip.none,

@@ -1,31 +1,41 @@
 import 'package:deliver_it_captin/constants.dart';
+import 'package:deliver_it_captin/viewmodels/signup_view_model.dart';
 import 'package:deliver_it_captin/views/login_view.dart';
 import 'package:deliver_it_captin/views/sign_continue_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
 
-class SignUpView extends StatelessWidget {
-  const SignUpView({super.key});
+class SignUpView extends StatefulWidget {
+  SignUpView({super.key, this.toggleView});
+  Function()? toggleView;
+
+  @override
+  State<SignUpView> createState() => _SignUpViewState();
+}
+
+class _SignUpViewState extends State<SignUpView> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  SignUpViewModel model = SignUpViewModel();
 
   @override
   Widget build(BuildContext context) {
-    final mqWidth = MediaQuery.of(context).size.width;
-    final mqHeight = MediaQuery.of(context).size.height;
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Scaffold(
-        body: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20,
-              vertical: 35,
-            ),
-            child: SingleChildScrollView(
-              child: ConstrainedBox(
-                constraints: BoxConstraints(
-                  maxHeight: mqHeight - mqHeight * 0.0002,
+    // final mqWidth = MediaQuery.of(context).size.width;
+    // final mqHeight = ;
+    return ChangeNotifierProvider<SignUpViewModel>(
+      create: (context) => model,
+      child: Consumer<SignUpViewModel>(builder: (context, model, child) {
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: Scaffold(
+            body: SafeArea(
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 35,
                 ),
-                child: Column(
+                child: ListView(
                   children: [
                     const Row(
                       textDirection: TextDirection.rtl,
@@ -95,8 +105,9 @@ class SignUpView extends StatelessWidget {
                     const SizedBox(
                       height: 24,
                     ),
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'رقم الهاتف',
                         labelStyle: TextStyle(
@@ -108,9 +119,10 @@ class SignUpView extends StatelessWidget {
                     const SizedBox(
                       height: 24,
                     ),
-                    const TextField(
+                    TextField(
                       obscureText: true,
-                      decoration: InputDecoration(
+                      controller: passwordController,
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'كلمة السر',
                         labelStyle: TextStyle(
@@ -149,11 +161,17 @@ class SignUpView extends StatelessWidget {
                     ),
                     const Spacer(),
                     ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => const SignUpContinue()));
+                      onPressed: () async {
+                        // Navigator.push(
+                        //     context,
+                        //     MaterialPageRoute(
+                        //         builder: (context) =>
+                        //             const SignUpContinue()));
+
+                        await model.signUp(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kPrimary,
@@ -188,14 +206,7 @@ class SignUpView extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const LoginView(),
-                              ),
-                            );
-                          },
+                          onPressed: widget.toggleView,
                           child: const Text(
                             'بتسجيل الدخول',
                             style: TextStyle(
@@ -213,8 +224,8 @@ class SignUpView extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
+        );
+      }),
     );
   }
 }

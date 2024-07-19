@@ -2,9 +2,14 @@ import 'package:deliver_it_captin/constants.dart';
 import 'package:deliver_it_captin/views/onboarding_view.dart';
 import 'package:flutter/material.dart';
 
-class LoginView extends StatelessWidget {
-  const LoginView({super.key});
+class LoginView extends StatefulWidget {
+  LoginView({super.key, this.toggleView});
+  Function()? toggleView;
+  @override
+  State<LoginView> createState() => _LoginViewState();
+}
 
+class _LoginViewState extends State<LoginView> {
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -134,14 +139,7 @@ class LoginView extends StatelessWidget {
                           ),
                         ),
                         TextButton(
-                          onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => const SignUpOnBoarding(),
-                              ),
-                            );
-                          },
+                          onPressed: widget.toggleView,
                           child: const Text(
                             'أنشئ حساب',
                             style: TextStyle(

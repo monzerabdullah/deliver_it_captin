@@ -46,6 +46,8 @@ dependencies:
   provider: ^6.1.2
   get_it: ^7.7.0
   intl_phone_field: ^3.2.0
+  google_maps: ^7.1.0
+  stacked_listview: ^1.0.4
 
 
 dev_dependencies:

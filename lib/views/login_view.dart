@@ -1,5 +1,4 @@
 import 'package:deliver_it_captin/constants.dart';
-import 'package:deliver_it_captin/views/onboarding_view.dart';
 import 'package:flutter/material.dart';
 
 class LoginView extends StatefulWidget {

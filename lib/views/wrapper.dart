@@ -1,3 +1,4 @@
+import 'package:deliver_it_captin/main.dart';
 import 'package:deliver_it_captin/views/authenticate.dart';
 import 'package:deliver_it_captin/views/home_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -18,7 +19,7 @@ class _WrapperState extends State<Wrapper> {
     if (user == null) {
       return const Authenticate();
     } else {
-      return const HomeView();
+      return const DeliverItCaptin();
     }
   }
 }

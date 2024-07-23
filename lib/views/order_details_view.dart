@@ -1,5 +1,4 @@
 import 'package:deliver_it_captin/constants.dart';
-import 'package:deliver_it_captin/views/sign_continue_view.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,6 @@ import 'dart:io';
 
 import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:intl_phone_field/phone_number.dart';
 
 class RiderOrderDetailsScreen extends StatefulWidget {
   final String orderId;
@@ -46,6 +44,7 @@ class _RiderOrderDetailsScreenState extends State<RiderOrderDetailsScreen> {
         'destination_location': _destinationLocation,
         'recipient_phone_number': _recipientPhoneNumber,
         'recipient_image_url': imageUrl,
+        'status': 'ready_to_start',
       });
     }
   }
@@ -57,6 +56,12 @@ class _RiderOrderDetailsScreenState extends State<RiderOrderDetailsScreen> {
         _recipientImage = File(pickedFile.path);
       });
     }
+  }
+
+  Future<void> _deliverdOrder() async {
+    await _firestore.collection('orders').doc(widget.orderId).update({
+      'status': 'delivered',
+    });
   }
 
   @override
@@ -146,31 +151,15 @@ class _RiderOrderDetailsScreenState extends State<RiderOrderDetailsScreen> {
                 ),
               ),
               const SizedBox(height: 16.0),
-
               const SizedBox(
                 height: 8,
               ),
-              // ElevatedButton(
-              //   onPressed: _pickImage,
-              //   style: ElevatedButton.styleFrom(
-              //     foregroundColor: kWhite,
-              //     backgroundColor: kPrimary,
-              //     textStyle: const TextStyle(
-              //       fontSize: 20.0,
-              //       fontFamily: 'Cairo',
-              //       fontWeight: FontWeight.w600,
-              //     ),
-              //     padding: const EdgeInsets.symmetric(
-              //       horizontal: 22,
-              //       vertical: 16,
-              //     ),
-              //     minimumSize: const Size.fromHeight(60),
-              //   ),
-              //   child: const Text('Pick Recipient Image'),
-              // ),
               const SizedBox(height: 16.0),
               ElevatedButton(
-                onPressed: _saveOrderDetails,
+                onPressed: () {
+                  _saveOrderDetails();
+                  Navigator.pop(context);
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: kPrimary,
                   foregroundColor: kWhite,

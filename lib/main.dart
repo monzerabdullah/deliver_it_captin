@@ -64,7 +64,7 @@ class _DeliverItCaptinState extends State<DeliverItCaptin> {
                   Orders(),
                   MoreView(),
                 ][selectedIndex],
-                drawer: const NavDrawer(),
+                drawer: NavDrawer(),
                 bottomNavigationBar: NavigationBar(
                   selectedIndex: selectedIndex,
                   onDestinationSelected: (index) {

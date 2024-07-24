@@ -1,13 +1,17 @@
 import 'package:deliver_it_captin/constants.dart';
+import 'package:deliver_it_captin/locator.dart';
+import 'package:deliver_it_captin/services/authentication_service.dart';
 import 'package:deliver_it_captin/views/orders_view.dart';
 import 'package:deliver_it_captin/views/reviews_view.dart';
 import 'package:deliver_it_captin/views/support_view.dart';
 import 'package:flutter/material.dart';
 
 class NavDrawer extends StatelessWidget {
-  const NavDrawer({
+  NavDrawer({
     super.key,
   });
+
+  final AuthenticationService _auth = locator<AuthenticationService>();
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +215,7 @@ class NavDrawer extends StatelessWidget {
                             children: [
                               ElevatedButton(
                                 onPressed: () {
-                                  Navigator.pop(context);
+                                  _auth.signOut();
                                 },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: kPrimaryText,

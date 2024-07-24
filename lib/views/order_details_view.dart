@@ -10,16 +10,15 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl_phone_field/intl_phone_field.dart';
 
 class RiderOrderDetailsScreen extends StatefulWidget {
+  const RiderOrderDetailsScreen({super.key, required this.orderId});
   final String orderId;
 
-  const RiderOrderDetailsScreen({super.key, required this.orderId});
-
   @override
-  _RiderOrderDetailsScreenState createState() =>
-      _RiderOrderDetailsScreenState();
+  State<RiderOrderDetailsScreen> createState() =>
+      RiderOrderDetailsScreenState();
 }
 
-class _RiderOrderDetailsScreenState extends State<RiderOrderDetailsScreen> {
+class RiderOrderDetailsScreenState extends State<RiderOrderDetailsScreen> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   String _destinationLocation = '';
@@ -56,12 +55,6 @@ class _RiderOrderDetailsScreenState extends State<RiderOrderDetailsScreen> {
         _recipientImage = File(pickedFile.path);
       });
     }
-  }
-
-  Future<void> _deliverdOrder() async {
-    await _firestore.collection('orders').doc(widget.orderId).update({
-      'status': 'delivered',
-    });
   }
 
   @override

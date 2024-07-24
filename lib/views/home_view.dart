@@ -1,4 +1,6 @@
 import 'package:deliver_it_captin/constants.dart';
+import 'package:deliver_it_captin/locator.dart';
+import 'package:deliver_it_captin/services/firestore_service.dart';
 import 'package:deliver_it_captin/views/order_details_view.dart';
 import 'package:deliver_it_captin/widgets/day_data.dart';
 import 'package:deliver_it_captin/widgets/work_timer.dart';
@@ -15,33 +17,8 @@ class HomeView extends StatefulWidget {
 
 class _HomeViewState extends State<HomeView> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirestoreService _firestore = locator<FirestoreService>();
   List<String> rejectedOrders = [];
-  void _acceptOrder(String orderId) async {
-    final user = _auth.currentUser;
-
-    if (user != null) {
-      await _firestore.collection('orders').doc(orderId).update({
-        'rider_id': user.uid,
-        'status': 'accepted',
-        'visibility': 'accepted_only',
-      });
-    }
-  }
-
-  void _arrivedAtStore(String orderId) async {
-    await _firestore.collection('orders').doc(orderId).update({
-      'pickup_location': 'pickup location address',
-      'delivery_location': 'delivery location address',
-      'receipt_image': 'url_to_receipt_image',
-    });
-  }
-
-  void _rejectOrder(String orderId) {
-    setState(() {
-      rejectedOrders.add(orderId);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -192,13 +169,7 @@ class _HomeViewState extends State<HomeView> {
                   child: SizedBox(
                     height: MediaQuery.of(context).size.height * .6,
                     child: StreamBuilder(
-                      stream: _firestore
-                          .collection('orders')
-                          // .where('visibility', isEqualTo: 'public')
-                          .where(
-                        'status',
-                        whereIn: ['pending', 'accepted'],
-                      ).snapshots(),
+                      stream: _firestore.activeOrders(),
                       builder:
                           (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData) {
@@ -217,256 +188,9 @@ class _HomeViewState extends State<HomeView> {
                             itemCount: visibleOrders.length,
                             itemBuilder: (context, index) {
                               final order = visibleOrders[index];
-                              return Center(
-                                child: SizedBox(
-                                  width: 330,
-                                  // height: 40,
-                                  child: Card(
-                                    color: kWhite,
-                                    child: Padding(
-                                      padding: const EdgeInsets.all(8.0),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            children: [
-                                              const CircleAvatar(
-                                                radius: 42,
-                                                backgroundImage: AssetImage(
-                                                  'images/imgs/ali.jpg',
-                                                ),
-                                              ),
-                                              const SizedBox(
-                                                width: 20,
-                                              ),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  children: [
-                                                    Text(
-                                                      'Order ID: ${order.id}',
-                                                      style: const TextStyle(
-                                                        fontFamily: 'Cairo',
-                                                        color: kPrimaryText,
-                                                        fontSize: 16,
-                                                        fontWeight:
-                                                            FontWeight.w500,
-                                                      ),
-                                                    ),
-                                                    const Text(
-                                                      ' 1 طلبات ',
-                                                      style: TextStyle(
-                                                        fontFamily: 'Cairo',
-                                                        color: kSecondaryText,
-                                                      ),
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(
-                                            height: 15,
-                                          ),
-                                          const Row(
-                                            children: [
-                                              CircleAvatar(
-                                                backgroundColor: kPrimary,
-                                                child: Icon(
-                                                  Icons.phone,
-                                                  color: kWhite,
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                width: 10,
-                                              ),
-                                              CircleAvatar(
-                                                backgroundColor: kPrimary,
-                                                child: Icon(
-                                                  Icons.location_pin,
-                                                  color: kWhite,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const Divider(),
-                                          const Text(
-                                            '• رقم الرحلة : ',
-                                            style: TextStyle(
-                                              fontFamily: 'Cairo',
-                                              fontSize: 14,
-                                              color: kSecondaryText,
-                                            ),
-                                          ),
-                                          const Text(
-                                            '• عنوان المطعم : ',
-                                            style: TextStyle(
-                                              fontFamily: 'Cairo',
-                                              fontSize: 14,
-                                              color: kSecondaryText,
-                                            ),
-                                          ),
-                                          const Text(
-                                            '• تاريخ إنشاء الرحلة: ',
-                                            style: TextStyle(
-                                              fontFamily: 'Cairo',
-                                              fontSize: 14,
-                                              color: kSecondaryText,
-                                            ),
-                                          ),
-                                          const Text(
-                                            '• الحالة : ',
-                                            style: TextStyle(
-                                              fontFamily: 'Cairo',
-                                              fontSize: 14,
-                                              color: kSecondaryText,
-                                            ),
-                                          ),
-                                          const Text(
-                                            '• طريقة الدفع : ',
-                                            style: TextStyle(
-                                              fontFamily: 'Cairo',
-                                              fontSize: 14,
-                                              color: kSecondaryText,
-                                            ),
-                                          ),
-                                          const SizedBox(
-                                            height: 20,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              if (order['status'] ==
-                                                  'accepted') ...[
-                                                ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor: kPrimary,
-                                                    foregroundColor: kWhite,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4),
-                                                    ),
-                                                    textStyle: const TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontFamily: 'Cairo',
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 22,
-                                                      vertical: 16,
-                                                    ),
-                                                    // minimumSize:
-                                                    //     const Size.fromHeight(32),
-                                                  ),
-                                                  onPressed: () {
-                                                    _arrivedAtStore(order.id);
-                                                    Navigator.of(context).push(
-                                                      MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            RiderOrderDetailsScreen(
-                                                          orderId: order.id,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: const Text(
-                                                    'لقد وصلت',
-                                                  ),
-                                                )
-                                              ] else ...[
-                                                ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor: kPrimary,
-                                                    foregroundColor: kWhite,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4),
-                                                    ),
-                                                    textStyle: const TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontFamily: 'Cairo',
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 22,
-                                                      vertical: 16,
-                                                    ),
-                                                    // minimumSize:
-                                                    //     const Size.fromHeight(32),
-                                                  ),
-                                                  onPressed: () {
-                                                    _acceptOrder(order.id);
-                                                    // Navigator.of(context).push(
-                                                    //   MaterialPageRoute(
-                                                    //     builder: (context) =>
-                                                    //         RiderOrderDetailsScreen(
-                                                    //             orderId: order.id),
-                                                    //   ),
-                                                    // );
-                                                  },
-                                                  child: const Text(
-                                                    'قبول',
-                                                  ),
-                                                ),
-                                                ElevatedButton(
-                                                  style:
-                                                      ElevatedButton.styleFrom(
-                                                    backgroundColor: kRed,
-                                                    foregroundColor: kWhite,
-                                                    shape:
-                                                        RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              4),
-                                                    ),
-                                                    textStyle: const TextStyle(
-                                                      fontSize: 16.0,
-                                                      fontFamily: 'Cairo',
-                                                      fontWeight:
-                                                          FontWeight.w600,
-                                                    ),
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                      horizontal: 22,
-                                                      vertical: 16,
-                                                    ),
-                                                    // minimumSize: const Size.fromHeight(32),
-                                                  ),
-                                                  onPressed: () {
-                                                    _rejectOrder(order.id);
-                                                    // Navigator.of(context).push(
-                                                    //   MaterialPageRoute(
-                                                    //     builder: (context) =>
-                                                    //         RiderOrderDetailsScreen(
-                                                    //             orderId: order.id),
-                                                    //   ),
-                                                    // );
-                                                  },
-                                                  child: const Text(
-                                                    'رفض',
-                                                  ),
-                                                )
-                                              ],
-                                            ],
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ),
+                              return NewOrderCard(
+                                order: order,
+                                rejectedOrders: rejectedOrders,
                               );
                             });
                       },
@@ -482,395 +206,343 @@ class _HomeViewState extends State<HomeView> {
   }
 }
 
-// class NewOrder extends StatefulWidget {
-//   const NewOrder({super.key});
+class NewOrderCard extends StatefulWidget {
+  NewOrderCard({super.key, required this.order, required this.rejectedOrders});
 
-//   @override
-//   _NewOrderState createState() => _NewOrderState();
-// }
+  DocumentSnapshot order;
+  List<String> rejectedOrders;
 
-// class _NewOrderState extends State<NewOrder> {
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
-//   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  @override
+  State<NewOrderCard> createState() => _NewOrderCardState();
+}
 
-//   void _acceptOrder(String orderId) async {
-//     final user = _auth.currentUser;
+class _NewOrderCardState extends State<NewOrderCard> {
+  final FirestoreService _firestore = locator<FirestoreService>();
+  final FirebaseAuth _auth = FirebaseAuth.instance;
 
-//     if (user != null) {
-//       await _firestore.collection('orders').doc(orderId).update({
-//         'rider_id': user.uid,
-//         'status': 'accepted',
-//         'visibility': 'accepted_only',
-//       });
-//     }
-//   }
+  // void _acceptOrder(String orderId) async {
+  //   final user = _auth.currentUser;
 
-//   void _arrivedAtStore(String orderId) async {
-//     await _firestore.collection('orders').doc(orderId).update({
-//       'status': 'ready_to_start',
-//       'pickup_location': 'pickup location address',
-//       'delivery_location': 'delivery location address',
-//       'receipt_image': 'url_to_receipt_image',
-//     });
-//   }
+  //   if (user != null) {
+  //     await _firestore.collection('orders').doc(orderId).update({
+  //       'rider_id': user.uid,
+  //       'status': 'accepted',
+  //       'visibility': 'accepted_only',
+  //     });
+  //   }
+  // }
 
-//   @override
-//   Widget build(BuildContext context) {
-//     return Directionality(
-//       textDirection: TextDirection.rtl,
-//       child: Scaffold(
-//         body: StreamBuilder(
-//           stream: _firestore
-//               .collection('orders')
-//               .where('status', isEqualTo: 'pending')
-//               .where('visibility', isEqualTo: 'public')
-//               .snapshots(),
-//           builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-//             if (!snapshot.hasData) {
-//               return const Center(child: CircularProgressIndicator());
-//             }
+  // void _arrivedAtStore(String orderId) async {
+  //   await _firestore.collection('orders').doc(orderId).update({
+  //     'pickup_location': 'pickup location address',
+  //     'delivery_location': 'delivery location address',
+  //     'receipt_image': 'url_to_receipt_image',
+  //   });
+  // }
 
-//             final orders = snapshot.data!.docs;
+  void _rejectOrder(String orderId) {
+    setState(() {
+      widget.rejectedOrders.add(orderId);
+    });
+  }
 
-//             return ListView.builder(
-//                 itemCount: orders.length,
-//                 itemBuilder: (context, index) {
-//                   final order = orders[index];
-//                   return Center(
-//                     child: SizedBox(
-//                       width: 330,
-//                       // height: 40,
-//                       child: Card(
-//                         color: kWhite,
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(8.0),
-//                           child: Column(
-//                             crossAxisAlignment: CrossAxisAlignment.start,
-//                             children: [
-//                               Row(
-//                                 children: [
-//                                   const CircleAvatar(
-//                                     radius: 42,
-//                                     backgroundImage: AssetImage(
-//                                       'images/imgs/ali.jpg',
-//                                     ),
-//                                   ),
-//                                   const SizedBox(
-//                                     width: 20,
-//                                   ),
-//                                   Expanded(
-//                                     child: Column(
-//                                       crossAxisAlignment:
-//                                           CrossAxisAlignment.start,
-//                                       children: [
-//                                         Text(
-//                                           'Store ID: ${order['store_id']}',
-//                                           style: const TextStyle(
-//                                             fontFamily: 'Cairo',
-//                                             color: kPrimaryText,
-//                                             fontSize: 16,
-//                                             fontWeight: FontWeight.w500,
-//                                           ),
-//                                         ),
-//                                         const Text(
-//                                           ' 1 طلبات ',
-//                                           style: TextStyle(
-//                                             fontFamily: 'Cairo',
-//                                             color: kSecondaryText,
-//                                           ),
-//                                         )
-//                                       ],
-//                                     ),
-//                                   ),
-//                                 ],
-//                               ),
-//                               const SizedBox(
-//                                 height: 15,
-//                               ),
-//                               const Row(
-//                                 children: [
-//                                   CircleAvatar(
-//                                     backgroundColor: kPrimary,
-//                                     child: Icon(
-//                                       Icons.phone,
-//                                       color: kWhite,
-//                                     ),
-//                                   ),
-//                                   SizedBox(
-//                                     width: 10,
-//                                   ),
-//                                   CircleAvatar(
-//                                     backgroundColor: kPrimary,
-//                                     child: Icon(
-//                                       Icons.location_pin,
-//                                       color: kWhite,
-//                                     ),
-//                                   ),
-//                                 ],
-//                               ),
-//                               const Divider(),
-//                               const Text(
-//                                 '• رقم الرحلة : ',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Cairo',
-//                                   fontSize: 14,
-//                                   color: kSecondaryText,
-//                                 ),
-//                               ),
-//                               const Text(
-//                                 '• عنوان المطعم : ',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Cairo',
-//                                   fontSize: 14,
-//                                   color: kSecondaryText,
-//                                 ),
-//                               ),
-//                               const Text(
-//                                 '• تاريخ إنشاء الرحلة: ',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Cairo',
-//                                   fontSize: 14,
-//                                   color: kSecondaryText,
-//                                 ),
-//                               ),
-//                               const Text(
-//                                 '• الحالة : ',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Cairo',
-//                                   fontSize: 14,
-//                                   color: kSecondaryText,
-//                                 ),
-//                               ),
-//                               const Text(
-//                                 '• طريقة الدفع : ',
-//                                 style: TextStyle(
-//                                   fontFamily: 'Cairo',
-//                                   fontSize: 14,
-//                                   color: kSecondaryText,
-//                                 ),
-//                               ),
-//                               const SizedBox(
-//                                 height: 20,
-//                               ),
-//                               Row(
-//                                 mainAxisSize: MainAxisSize.min,
-//                                 mainAxisAlignment:
-//                                     MainAxisAlignment.spaceBetween,
-//                                 children: [
-//                                   (order['status'] == 'accepted')
-//                                       ? ElevatedButton(
-//                                           style: ElevatedButton.styleFrom(
-//                                             backgroundColor: kPrimary,
-//                                             foregroundColor: kWhite,
-//                                             shape: RoundedRectangleBorder(
-//                                               borderRadius:
-//                                                   BorderRadius.circular(4),
-//                                             ),
-//                                             textStyle: const TextStyle(
-//                                               fontSize: 16.0,
-//                                               fontFamily: 'Cairo',
-//                                               fontWeight: FontWeight.w600,
-//                                             ),
-//                                             padding: const EdgeInsets.symmetric(
-//                                               horizontal: 22,
-//                                               vertical: 16,
-//                                             ),
-//                                             // minimumSize:
-//                                             //     const Size.fromHeight(32),
-//                                           ),
-//                                           onPressed: () {
-//                                             _arrivedAtStore(order['id']);
-//                                             Navigator.of(context).push(
-//                                               MaterialPageRoute(
-//                                                 builder: (context) =>
-//                                                     RiderOrderDetailsScreen(
-//                                                         orderId: order.id),
-//                                               ),
-//                                             );
-//                                           },
-//                                           child: const Text(
-//                                             'لقد وصلت',
-//                                           ),
-//                                         )
-//                                       : ElevatedButton(
-//                                           style: ElevatedButton.styleFrom(
-//                                             backgroundColor: kPrimary,
-//                                             foregroundColor: kWhite,
-//                                             shape: RoundedRectangleBorder(
-//                                               borderRadius:
-//                                                   BorderRadius.circular(4),
-//                                             ),
-//                                             textStyle: const TextStyle(
-//                                               fontSize: 16.0,
-//                                               fontFamily: 'Cairo',
-//                                               fontWeight: FontWeight.w600,
-//                                             ),
-//                                             padding: const EdgeInsets.symmetric(
-//                                               horizontal: 22,
-//                                               vertical: 16,
-//                                             ),
-//                                             // minimumSize:
-//                                             //     const Size.fromHeight(32),
-//                                           ),
-//                                           onPressed: () {
-//                                             _acceptOrder(order.id);
-//                                             Navigator.of(context).push(
-//                                               MaterialPageRoute(
-//                                                 builder: (context) =>
-//                                                     RiderOrderDetailsScreen(
-//                                                         orderId: order.id),
-//                                               ),
-//                                             );
-//                                           },
-//                                           child: const Text(
-//                                             'قبول',
-//                                           ),
-//                                         ),
-//                                   ElevatedButton(
-//                                     style: ElevatedButton.styleFrom(
-//                                       backgroundColor: kRed,
-//                                       foregroundColor: kWhite,
-//                                       shape: RoundedRectangleBorder(
-//                                         borderRadius: BorderRadius.circular(4),
-//                                       ),
-//                                       textStyle: const TextStyle(
-//                                         fontSize: 16.0,
-//                                         fontFamily: 'Cairo',
-//                                         fontWeight: FontWeight.w600,
-//                                       ),
-//                                       padding: const EdgeInsets.symmetric(
-//                                         horizontal: 22,
-//                                         vertical: 16,
-//                                       ),
-//                                       // minimumSize: const Size.fromHeight(32),
-//                                     ),
-//                                     onPressed: () {
-//                                       _acceptOrder(order.id);
-//                                       Navigator.of(context).push(
-//                                         MaterialPageRoute(
-//                                           builder: (context) =>
-//                                               RiderOrderDetailsScreen(
-//                                                   orderId: order.id),
-//                                         ),
-//                                       );
-//                                     },
-//                                     child: const Text(
-//                                       'رفض',
-//                                     ),
-//                                   )
-//                                 ],
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       ),
-//                     ),
-//                   );
-//                 });
-//           },
-//         ),
-//       ),
-//     );
-//   }
-// }
-
-// // class StoreOrderCard extends StatelessWidget {
-// //   const StoreOrderCard({super.key});
-
-// //   @override
-// //   Widget build(BuildContext context) {
-// //     return Card(
-// //       child: Column(
-// //         children: [
-// //           Row(
-// //             children: [
-// //               ClipRRect(
-// //                 borderRadius: BorderRadius.circular(4),
-// //                 child: Image.asset('images/imgs/ali.jpg'),
-// //               ),
-// //               const SizedBox(
-// //                 width: 20,
-// //               ),
-// //               const Column(
-// //                 children: [
-// //                   Text(
-// //                     'Store ID: ${order['store_id']}',
-// //                     style: TextStyle(
-// //                       fontFamily: 'Cairo',
-// //                       color: kPrimaryText,
-// //                       fontSize: 16,
-// //                       fontWeight: FontWeight.w500,
-// //                     ),
-// //                   ),
-// //                   Text(
-// //                     ' 1 طلبات ',
-// //                     style: TextStyle(
-// //                       fontFamily: 'Cairo',
-// //                       color: kSecondaryText,
-// //                     ),
-// //                   )
-// //                 ],
-// //               ),
-// //             ],
-// //           ),
-// //           const Row(
-// //             children: [
-// //               CircleAvatar(
-// //                 backgroundColor: kPrimary,
-// //                 child: Icon(
-// //                   Icons.phone,
-// //                   color: kWhite,
-// //                 ),
-// //               ),
-// //               CircleAvatar(
-// //                 backgroundColor: kPrimary,
-// //                 child: Icon(
-// //                   Icons.location_pin,
-// //                   color: kWhite,
-// //                 ),
-// //               ),
-// //             ],
-// //           ),
-// //           const Divider(),
-// //           const Text(
-// //             '• رقم الرحلة : ',
-// //             style: TextStyle(
-// //               fontFamily: 'Cairo',
-// //               fontSize: 14,
-// //             ),
-// //           ),
-// //           const Text(
-// //             '• تاريخ إنشاء الرحلة: ',
-// //             style: TextStyle(
-// //               fontFamily: 'Cairo',
-// //               fontSize: 14,
-// //             ),
-// //           ),
-// //           const Text(
-// //             '• الحالة : ',
-// //             style: TextStyle(
-// //               fontFamily: 'Cairo',
-// //               fontSize: 14,
-// //             ),
-// //           ),
-// //           const Text(
-// //             '• طريقة الدفع : ',
-// //             style: TextStyle(
-// //               fontFamily: 'Cairo',
-// //               fontSize: 14,
-// //             ),
-// //           ),
-// //           ElevatedButton(
-// //               child: const Text('dddddd'),
-// //               onPressed: () {
-// //                 _acceptOrder(order.id);
-// //                 Navigator.of(context).push(MaterialPageRoute(
-// //                     builder: (context) =>
-// //                         RiderOrderDetailsScreen(orderId: order.id)));
-// //               })
-// //         ],
-// //       ),
-// //     );
-// //   }
-// // }
-
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: SizedBox(
+        width: 330,
+        height: 500,
+        child: Card(
+          color: kWhite,
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 42,
+                      backgroundImage: NetworkImage(
+                        widget.order['storeLogoUrl'],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            'Order ID: ${widget.order.id}',
+                            style: const TextStyle(
+                              fontFamily: 'Cairo',
+                              color: kPrimaryText,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const Text(
+                            ' 1 طلبات ',
+                            style: TextStyle(
+                              fontFamily: 'Cairo',
+                              color: kSecondaryText,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 15,
+                ),
+                Row(
+                  children: [
+                    CircleAvatar(
+                      backgroundColor: kPrimary,
+                      child: IconButton(
+                        onPressed: () {},
+                        icon: const Icon(
+                          Icons.phone,
+                          color: kWhite,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    const CircleAvatar(
+                      backgroundColor: kPrimary,
+                      child: Icon(
+                        Icons.location_pin,
+                        color: kWhite,
+                      ),
+                    ),
+                  ],
+                ),
+                const Divider(),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: '• رقم الرحلة : ',
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kSecondaryText,
+                        ),
+                      ),
+                      TextSpan(
+                        text: widget.order.id,
+                        style: const TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kPrimaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: '• عنوان المطعم : ',
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kSecondaryText,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${widget.order['location']}',
+                        style: const TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kPrimaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: '• تاريخ إنشاء الرحلة: ',
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kSecondaryText,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${widget.order['created_at']}',
+                        style: const TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kPrimaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                RichText(
+                  text: TextSpan(
+                    children: [
+                      const TextSpan(
+                        text: '• الحالة : ',
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kSecondaryText,
+                        ),
+                      ),
+                      TextSpan(
+                        text: '${widget.order['status']}',
+                        style: const TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kPrimary,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                RichText(
+                  text: const TextSpan(
+                    children: [
+                      TextSpan(
+                        text: '• طريقة الدفع : ',
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kSecondaryText,
+                        ),
+                      ),
+                      TextSpan(
+                        text: 'كاش',
+                        style: TextStyle(
+                          fontFamily: 'Cairo',
+                          fontSize: 14,
+                          color: kPrimaryText,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    if (widget.order['status'] == 'accepted') ...[
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPrimary,
+                          foregroundColor: kWhite,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.w600,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 22,
+                            vertical: 16,
+                          ),
+                          // minimumSize:
+                          //     const Size.fromHeight(32),
+                        ),
+                        onPressed: () {
+                          _firestore.arrivedAtStore(widget.order.id);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => RiderOrderDetailsScreen(
+                                orderId: widget.order.id,
+                              ),
+                            ),
+                          );
+                        },
+                        child: const Text(
+                          'لقد وصلت',
+                        ),
+                      )
+                    ] else ...[
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kPrimary,
+                          foregroundColor: kWhite,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.w600,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 22,
+                            vertical: 16,
+                          ),
+                          // minimumSize:
+                          //     const Size.fromHeight(32),
+                        ),
+                        onPressed: () {
+                          _firestore.acceptOrder(
+                            orderId: widget.order.id,
+                            riderId: _auth.currentUser!.uid,
+                          );
+                          // Navigator.of(context).push(
+                          //   MaterialPageRoute(
+                          //     builder: (context) =>
+                          //         RiderOrderDetailsScreen(
+                          //             orderId: order.id),
+                          //   ),
+                          // );
+                        },
+                        child: const Text(
+                          'قبول',
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: kRed,
+                          foregroundColor: kWhite,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          textStyle: const TextStyle(
+                            fontSize: 16.0,
+                            fontFamily: 'Cairo',
+                            fontWeight: FontWeight.w600,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 22,
+                            vertical: 16,
+                          ),
+                          // minimumSize: const Size.fromHeight(32),
+                        ),
+                        onPressed: () {
+                          _rejectOrder(widget.order.id);
+                        },
+                        child: const Text(
+                          'رفض',
+                        ),
+                      )
+                    ],
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}

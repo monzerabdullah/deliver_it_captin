@@ -1,11 +1,13 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deliver_it_captin/constants.dart';
+import 'package:deliver_it_captin/locator.dart';
+import 'package:deliver_it_captin/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 
 class DetailsView extends StatelessWidget {
   DetailsView({super.key, required this.orderId});
   final String orderId;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirestoreService _firestore = locator<FirestoreService>();
 
   String chaipLabel(String orderStatus) {
     if (orderStatus == 'pending') {
@@ -41,12 +43,6 @@ class DetailsView extends StatelessWidget {
     }
   }
 
-  _deliverdOrder(String ordeId) async {
-    _firestore.collection('orders').doc(ordeId).update({
-      'status': 'delivered',
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -54,7 +50,7 @@ class DetailsView extends StatelessWidget {
       child: Scaffold(
         appBar: AppBar(),
         body: StreamBuilder<DocumentSnapshot>(
-            stream: _firestore.collection('orders').doc(orderId).snapshots(),
+            stream: _firestore.orderWithId(orderId),
             builder: (context, snapshot) {
               if (!snapshot.hasData) {
                 return const Text('No Details Yet');
@@ -200,7 +196,7 @@ class DetailsView extends StatelessWidget {
                           children: [
                             ElevatedButton(
                               onPressed: () {
-                                _deliverdOrder(order.id);
+                                _firestore.deliverdOrder(order.id);
                               },
                               child: const Text('تم التوصيل'),
                             ),

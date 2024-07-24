@@ -1,14 +1,22 @@
 import 'package:deliver_it_captin/constants.dart';
+import 'package:deliver_it_captin/locator.dart';
+import 'package:deliver_it_captin/services/authentication_service.dart';
+import 'package:deliver_it_captin/services/firestore_service.dart';
 import 'package:flutter/material.dart';
 
 class LoginView extends StatefulWidget {
-  LoginView({super.key, this.toggleView});
-  Function()? toggleView;
+  const LoginView({super.key, this.toggleView});
+  final Function()? toggleView;
   @override
   State<LoginView> createState() => _LoginViewState();
 }
 
 class _LoginViewState extends State<LoginView> {
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+
+  final AuthenticationService _auth = locator<AuthenticationService>();
+
   @override
   Widget build(BuildContext context) {
     return Directionality(
@@ -62,10 +70,11 @@ class _LoginViewState extends State<LoginView> {
                     const SizedBox(
                       height: 64,
                     ),
-                    const TextField(
-                      decoration: InputDecoration(
+                    TextField(
+                      controller: emailController,
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
-                        labelText: 'الإسم',
+                        labelText: 'البريد',
                         labelStyle: TextStyle(
                           fontFamily: 'Cairo',
                           color: kSecondaryText,
@@ -75,9 +84,10 @@ class _LoginViewState extends State<LoginView> {
                     const SizedBox(
                       height: 24,
                     ),
-                    const TextField(
+                    TextField(
+                      controller: passwordController,
                       obscureText: true,
-                      decoration: InputDecoration(
+                      decoration: const InputDecoration(
                         border: OutlineInputBorder(),
                         labelText: 'كلمة السر',
                         labelStyle: TextStyle(
@@ -104,7 +114,12 @@ class _LoginViewState extends State<LoginView> {
                     ),
                     const Spacer(),
                     ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        _auth.loginWithEmail(
+                          email: emailController.text,
+                          password: passwordController.text,
+                        );
+                      },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: kPrimary,
                         textStyle: const TextStyle(

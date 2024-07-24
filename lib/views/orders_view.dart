@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:deliver_it_captin/constants.dart';
+import 'package:deliver_it_captin/locator.dart';
+import 'package:deliver_it_captin/services/firestore_service.dart';
 import 'package:deliver_it_captin/views/details_view.dart';
 import 'package:deliver_it_captin/views/order_details_view.dart';
 import 'package:deliver_it_captin/views/tabs/accepted_view.dart';
@@ -9,7 +11,6 @@ import 'package:deliver_it_captin/views/tabs/delivered_view.dart';
 import 'package:deliver_it_captin/views/tabs/delivering_view.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 
 class Orders extends StatelessWidget {
   const Orders({super.key});
@@ -41,7 +42,6 @@ class OrdersList extends StatefulWidget {
 }
 
 class _OrdersListState extends State<OrdersList> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final user = FirebaseAuth.instance.currentUser;
 
   @override
@@ -91,12 +91,7 @@ class OrdersItem extends StatelessWidget {
   OrdersItem({super.key, required this.orderId});
 
   final String orderId;
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  void _readyToStart(String orderId) async {
-    await _firestore.collection('orders').doc(orderId).update({
-      'status': 'ready_to_start',
-    });
-  }
+  final FirestoreService _firestore = locator<FirestoreService>();
 
   String chaipLabel(String orderStatus) {
     if (orderStatus == 'pending') {
@@ -137,7 +132,7 @@ class OrdersItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
-        stream: _firestore.collection('orders').doc(orderId).snapshots(),
+        stream: _firestore.orderWithId(orderId),
         builder: (context, snapshot) {
           if (!snapshot.hasData) {
             return Container();
@@ -205,7 +200,7 @@ class OrdersItem extends StatelessWidget {
                               order['status'] == 'ready_to_start'
                           ? ElevatedButton(
                               onPressed: () {
-                                _readyToStart(order.id);
+                                _firestore.readyToStart(order.id);
                               },
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: kPrimary,

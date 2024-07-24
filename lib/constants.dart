@@ -12,85 +12,85 @@ const kSecondaryText = Color(0xFF9C9FB7);
 
 const kRed = Color(0xFFFC4850);
 
-const textRegular14 = TextStyle(
+const kTextRegular14 = TextStyle(
   fontFamily: 'Cairo',
   fontSize: 14,
   color: kPrimaryText,
 );
 
-const textRegular16 = TextStyle(
+const kTextRegular16 = TextStyle(
   fontFamily: 'Cairo',
   fontSize: 16,
   color: kPrimaryText,
 );
 
-const textRegular22 = TextStyle(
+const kTextRegular22 = TextStyle(
   fontFamily: 'Cairo',
   fontSize: 22,
   color: kPrimaryText,
 );
 
-const textRegular32 = TextStyle(
+const kTextRegular32 = TextStyle(
   fontFamily: 'Cairo',
   fontSize: 32,
   color: kPrimaryText,
 );
 
-const textMedium14 = TextStyle(
+const kTextMedium14 = TextStyle(
   fontFamily: 'Cairo',
   fontSize: 14,
   color: kPrimaryText,
   fontWeight: FontWeight.w500,
 );
-const textMedium16 = TextStyle(
+const kTextMedium16 = TextStyle(
   fontFamily: 'Cairo',
   fontSize: 16,
   color: kPrimaryText,
   fontWeight: FontWeight.w500,
 );
 
-const textMedium22 = TextStyle(
+const kTextMedium22 = TextStyle(
   fontFamily: 'Cairo',
   fontSize: 22,
   color: kPrimaryText,
   fontWeight: FontWeight.w500,
 );
 
-const textMedium32 = TextStyle(
-  fontFamily: 'Cairo',
-  fontSize: 32,
-  color: kPrimaryText,
-  fontWeight: FontWeight.w500,
-);
-
-const textBold14 = TextStyle(
-  fontFamily: 'Cairo',
-  fontSize: 14,
-  color: kPrimaryText,
-  fontWeight: FontWeight.bold,
-);
-const textBold16 = TextStyle(
-  fontFamily: 'Cairo',
-  fontSize: 16,
-  color: kPrimaryText,
-  fontWeight: FontWeight.bold,
-);
-
-const textBold22 = TextStyle(
-  fontFamily: 'Cairo',
-  fontSize: 22,
-  color: kPrimaryText,
-  fontWeight: FontWeight.bold,
-);
-
-const textBold32 = TextStyle(
+const kTextMedium32 = TextStyle(
   fontFamily: 'Cairo',
   fontSize: 32,
   color: kPrimaryText,
   fontWeight: FontWeight.w500,
 );
 
-ButtonStyle mainButton = ElevatedButton.styleFrom(
+const kTextBold14 = TextStyle(
+  fontFamily: 'Cairo',
+  fontSize: 14,
+  color: kPrimaryText,
+  fontWeight: FontWeight.bold,
+);
+const kTextBold16 = TextStyle(
+  fontFamily: 'Cairo',
+  fontSize: 16,
+  color: kPrimaryText,
+  fontWeight: FontWeight.bold,
+);
+
+const kTextBold22 = TextStyle(
+  fontFamily: 'Cairo',
+  fontSize: 22,
+  color: kPrimaryText,
+  fontWeight: FontWeight.bold,
+);
+
+const kTextBold32 = TextStyle(
+  fontFamily: 'Cairo',
+  fontSize: 32,
+  color: kPrimaryText,
+  fontWeight: FontWeight.w500,
+);
+
+ButtonStyle kMainButton = ElevatedButton.styleFrom(
   backgroundColor: kPrimary,
   foregroundColor: kWhite,
   shape: RoundedRectangleBorder(
@@ -100,7 +100,7 @@ ButtonStyle mainButton = ElevatedButton.styleFrom(
   minimumSize: const Size.fromHeight(56),
 );
 
-ButtonStyle secondaryButton = ElevatedButton.styleFrom(
+ButtonStyle kSecondaryButton = ElevatedButton.styleFrom(
   backgroundColor: Colors.transparent,
   foregroundColor: kPrimary,
   shape: RoundedRectangleBorder(

@@ -90,11 +90,22 @@ class FirestoreService {
   }
 
   void acceptOrder({required String orderId, required String riderId}) async {
+    var riderDoc = await _riders.doc(riderId).get();
+    var riderData = riderDoc.data() as Map;
+
     await _firestore.collection('orders').doc(orderId).update({
       'rider_id': riderId,
       'status': 'accepted',
       'visibility': 'accepted_only',
+      'rider_name': riderData['name'],
+      'rider_avatar': riderData['avatarImgUrl'],
+      'rider_phone': riderData['phoneNumber']
     });
+
+    // if (!riderDoc.exists) {
+    //   print('Store document does not exist');
+    //   return;
+    // }
   }
 
   void arrivedAtStore(String orderId) async {

@@ -178,80 +178,69 @@ class OrdersItem extends StatelessWidget {
                     ],
                   ),
                   const Divider(),
-                  const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Expanded(child: LocationSide()),
-                      Expanded(
-                        child: Icon(
-                          Icons.arrow_forward,
-                          size: 32,
-                          color: kPrimaryText,
-                        ),
-                      ),
-                      Expanded(child: LocationSide()),
-                    ],
-                  ),
+                  TripPath(orderId: orderId),
                   const SizedBox(height: 20),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      order['status'] == 'accepted' ||
-                              order['status'] == 'ready_to_start'
-                          ? ElevatedButton(
-                              onPressed: () {
-                                _firestore.readyToStart(order.id);
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: kPrimary,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                ),
-                              ),
-                              child: const Text(
-                                'طلب تأكيد',
-                                style: TextStyle(
-                                  fontFamily: 'Cairo',
-                                  color: kWhite,
-                                ),
-                              ),
-                            )
-                          : ElevatedButton(
-                              onPressed: () {
-                                order.data()!.containsKey('recipient_image_url')
-                                    ? Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) => DetailsView(
-                                            orderId: order.id,
-                                          ),
-                                        ),
-                                      )
-                                    : Navigator.of(context).push(
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              RiderOrderDetailsScreen(
-                                            orderId: order.id,
-                                          ),
-                                        ),
-                                      );
-                              },
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: kWhite,
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(4),
-                                  side: const BorderSide(
-                                    color: kPrimary,
-                                  ),
-                                ),
-                              ),
-                              child: const Text(
-                                'التفاصيل',
-                                style: TextStyle(
-                                  fontFamily: 'Cairo',
-                                  color: kPrimary,
-                                ),
+                      if (order['status'] == 'accepted' ||
+                          order['status'] == 'ready_to_start') ...[
+                        ElevatedButton(
+                          onPressed: () {
+                            _firestore.readyToStart(order.id);
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: kPrimary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                            ),
+                          ),
+                          child: const Text(
+                            'طلب تأكيد',
+                            style: TextStyle(
+                              fontFamily: 'Cairo',
+                              color: kWhite,
+                            ),
+                          ),
+                        )
+                      ] else ...[
+                        ElevatedButton(
+                          onPressed: () {
+                            order.data()!.containsKey('recipient_image_url')
+                                ? Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => DetailsView(
+                                        orderId: order.id,
+                                      ),
+                                    ),
+                                  )
+                                : Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          RiderOrderDetailsScreen(
+                                        orderId: order.id,
+                                      ),
+                                    ),
+                                  );
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: kWhite,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(4),
+                              side: const BorderSide(
+                                color: kPrimary,
                               ),
                             ),
+                          ),
+                          child: const Text(
+                            'التفاصيل',
+                            style: TextStyle(
+                              fontFamily: 'Cairo',
+                              color: kPrimary,
+                            ),
+                          ),
+                        ),
+                      ],
                     ],
                   )
                 ],
@@ -262,36 +251,59 @@ class OrdersItem extends StatelessWidget {
   }
 }
 
-class LocationSide extends StatelessWidget {
-  const LocationSide({
+class TripPath extends StatelessWidget {
+  TripPath({
     super.key,
+    required this.orderId,
   });
-
+  final String orderId;
+  final FirestoreService _firestore = locator<FirestoreService>();
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          'أكتوبر الحي التاني',
-          style: TextStyle(
-            color: kPrimaryText,
-            fontFamily: 'Cairo',
-            fontSize: 16,
-          ),
-        ),
-        SizedBox(
-          height: 12,
-        ),
-        Text(
-          '22 يونيو ، 2024 ،  PM 8:04',
-          style: TextStyle(
-            color: kSecondaryText,
-            fontFamily: 'Cairo',
-            fontSize: 16,
-          ),
-        )
-      ],
-    );
+    return StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
+        stream: _firestore.orderWithId(orderId),
+        builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            return Container();
+          }
+          final order = snapshot.data!;
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      order['location'],
+                      style: kTextRegular16,
+                    ),
+                    const SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      order['created_at'].toDate().toString(),
+                      style: kTextRegular16,
+                    )
+                  ],
+                ),
+              ),
+              const Expanded(
+                child: Icon(
+                  Icons.arrow_forward,
+                  size: 32,
+                  color: kPrimaryText,
+                ),
+              ),
+              const Expanded(
+                child: Text(
+                  'لم يتم تحديد الوجهة بعد',
+                  style: kTextRegular14,
+                ),
+              ),
+            ],
+          );
+        });
   }
 }

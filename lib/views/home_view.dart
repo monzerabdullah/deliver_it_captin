@@ -240,6 +240,24 @@ class _NewOrderCardState extends State<NewOrderCard> {
   //   });
   // }
 
+  String chaipLabel(String orderStatus) {
+    if (orderStatus == 'pending') {
+      return 'في إنتظار القبول';
+    } else if (orderStatus == 'accepted') {
+      return 'تم القبول';
+    } else if (orderStatus == 'ready_to_start') {
+      return 'جاهز للتوصيل';
+    } else if (orderStatus == 'delivering') {
+      return 'جاري للتوصيل';
+    } else if (orderStatus == 'canceled') {
+      return 'ملغية';
+    } else if (orderStatus == 'delivered') {
+      return 'تم التوصيل';
+    } else {
+      return 'غير محدد';
+    }
+  }
+
   void _rejectOrder(String orderId) {
     setState(() {
       widget.rejectedOrders.add(orderId);
@@ -261,10 +279,14 @@ class _NewOrderCardState extends State<NewOrderCard> {
               children: [
                 Row(
                   children: [
-                    CircleAvatar(
-                      radius: 42,
-                      backgroundImage: NetworkImage(
-                        widget.order['storeLogoUrl'],
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(60),
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: Image.network(
+                          widget.order['storeLogoUrl'],
+                        ),
                       ),
                     ),
                     const SizedBox(
@@ -275,7 +297,7 @@ class _NewOrderCardState extends State<NewOrderCard> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            'Order ID: ${widget.order.id}',
+                            widget.order['store_name'],
                             style: const TextStyle(
                               fontFamily: 'Cairo',
                               color: kPrimaryText,
@@ -303,7 +325,10 @@ class _NewOrderCardState extends State<NewOrderCard> {
                     CircleAvatar(
                       backgroundColor: kPrimary,
                       child: IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+                          //  widget.order['storePhone']
+                          //laucnh call here
+                        },
                         icon: const Icon(
                           Icons.phone,
                           color: kWhite,
@@ -379,7 +404,7 @@ class _NewOrderCardState extends State<NewOrderCard> {
                         ),
                       ),
                       TextSpan(
-                        text: '${widget.order['created_at']}',
+                        text: widget.order['created_at'].toDate().toString(),
                         style: const TextStyle(
                           fontFamily: 'Cairo',
                           fontSize: 14,
@@ -401,7 +426,7 @@ class _NewOrderCardState extends State<NewOrderCard> {
                         ),
                       ),
                       TextSpan(
-                        text: '${widget.order['status']}',
+                        text: chaipLabel(widget.order['status']),
                         style: const TextStyle(
                           fontFamily: 'Cairo',
                           fontSize: 14,

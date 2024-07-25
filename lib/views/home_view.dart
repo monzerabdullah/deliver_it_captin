@@ -4,9 +4,11 @@ import 'package:deliver_it_captin/services/firestore_service.dart';
 import 'package:deliver_it_captin/views/order_details_view.dart';
 import 'package:deliver_it_captin/widgets/day_data.dart';
 import 'package:deliver_it_captin/widgets/work_timer.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:swipable_stack/swipable_stack.dart';
 
 class HomeView extends StatefulWidget {
   const HomeView({super.key});
@@ -25,15 +27,7 @@ class _HomeViewState extends State<HomeView> {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        // floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
-        // floatingActionButton: FloatingActionButton(
-        //   backgroundColor: kWhite,
-        //   onPressed: () {},
-        //   child: const Icon(
-        //     Icons.headset_mic_outlined,
-        //     color: kPrimaryText,
-        //   ),
-        // ),
+        backgroundColor: kWhite,
         appBar: AppBar(
           leading: IconButton(
             icon: const Icon(Icons.menu),
@@ -162,19 +156,21 @@ class _HomeViewState extends State<HomeView> {
                   ),
                 ),
               ),
-              Align(
-                alignment: const Alignment(0, 0),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: SizedBox(
-                    height: MediaQuery.of(context).size.height * .6,
-                    child: StreamBuilder(
+              Positioned(
+                bottom: -MediaQuery.of(context).size.width * .25,
+                left: 0,
+                right: 0,
+                child: Center(
+                  child: StreamBuilder(
                       stream: _firestore.activeOrders(),
                       builder:
                           (context, AsyncSnapshot<QuerySnapshot> snapshot) {
                         if (!snapshot.hasData) {
                           return const Center(
-                              child: CircularProgressIndicator());
+                            child: CupertinoActivityIndicator(
+                              color: kPrimary,
+                            ),
+                          );
                         }
 
                         final orders = snapshot.data!.docs;
@@ -182,20 +178,28 @@ class _HomeViewState extends State<HomeView> {
                             .where(
                                 (order) => !rejectedOrders.contains(order.id))
                             .toList();
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10,
+                          ),
+                          child: SizedBox(
+                            height: MediaQuery.of(context).size.height * .6,
+                            child: Stack(
+                              children: List<Widget>.generate(
+                                visibleOrders.length,
+                                (index) {
+                                  final order = visibleOrders[index];
 
-                        return ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemCount: visibleOrders.length,
-                            itemBuilder: (context, index) {
-                              final order = visibleOrders[index];
-                              return NewOrderCard(
-                                order: order,
-                                rejectedOrders: rejectedOrders,
-                              );
-                            });
-                      },
-                    ),
-                  ),
+                                  return NewOrderCard(
+                                    order: order,
+                                    rejectedOrders: rejectedOrders,
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                          ),
+                        );
+                      }),
                 ),
               )
             ],
@@ -219,26 +223,6 @@ class NewOrderCard extends StatefulWidget {
 class _NewOrderCardState extends State<NewOrderCard> {
   final FirestoreService _firestore = locator<FirestoreService>();
   final FirebaseAuth _auth = FirebaseAuth.instance;
-
-  // void _acceptOrder(String orderId) async {
-  //   final user = _auth.currentUser;
-
-  //   if (user != null) {
-  //     await _firestore.collection('orders').doc(orderId).update({
-  //       'rider_id': user.uid,
-  //       'status': 'accepted',
-  //       'visibility': 'accepted_only',
-  //     });
-  //   }
-  // }
-
-  // void _arrivedAtStore(String orderId) async {
-  //   await _firestore.collection('orders').doc(orderId).update({
-  //     'pickup_location': 'pickup location address',
-  //     'delivery_location': 'delivery location address',
-  //     'receipt_image': 'url_to_receipt_image',
-  //   });
-  // }
 
   String chaipLabel(String orderStatus) {
     if (orderStatus == 'pending') {
@@ -266,15 +250,17 @@ class _NewOrderCardState extends State<NewOrderCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: SizedBox(
-        width: 330,
-        height: 500,
-        child: Card(
+    return SwipableStack(
+      builder: (context, properties) {
+        return Card(
           color: kWhite,
           child: Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+              vertical: 20,
+            ),
             child: Column(
+              mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Row(
@@ -563,11 +549,14 @@ class _NewOrderCardState extends State<NewOrderCard> {
                     ],
                   ],
                 ),
+                const SizedBox(
+                  height: 30,
+                ),
               ],
             ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

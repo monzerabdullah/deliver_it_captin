@@ -189,7 +189,9 @@ class _SignUpViewState extends State<SignUpView> {
                     ),
                   ),
                 ),
-                const Spacer(),
+                const SizedBox(
+                  height: 20,
+                ),
                 ElevatedButton(
                   onPressed: () async {
                     await _auth.signUpWithEmail(
@@ -202,19 +204,7 @@ class _SignUpViewState extends State<SignUpView> {
                       plateNumber: plateController.text,
                     );
                   },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: kPrimary,
-                    textStyle: const TextStyle(
-                      fontSize: 20.0,
-                      fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w600,
-                    ),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 22,
-                      vertical: 16,
-                    ),
-                    minimumSize: const Size.fromHeight(60),
-                  ),
+                  style: kMainButton,
                   child: const Text(
                     'التالي',
                   ),

@@ -98,6 +98,11 @@ ButtonStyle kMainButton = ElevatedButton.styleFrom(
     side: BorderSide.none,
   ),
   minimumSize: const Size.fromHeight(56),
+  textStyle: const TextStyle(
+    fontFamily: 'Cairo',
+    fontSize: 16,
+    fontWeight: FontWeight.bold,
+  ),
 );
 
 ButtonStyle kSecondaryButton = ElevatedButton.styleFrom(
